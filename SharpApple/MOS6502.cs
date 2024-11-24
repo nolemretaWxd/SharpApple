@@ -1585,7 +1585,7 @@ namespace SharpApple
                     goto case (0xEA);
                     */
                 default:
-                    Console.WriteLine("Illegal opcode: " + _opcode.ToString("X2"));
+                    EmulatorMain.Log.Error($"Illegal opcode: {_opcode.ToString("X2")}");
                     goto case (0xEA); //NOP
             }
 

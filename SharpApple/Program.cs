@@ -1,1 +1,1 @@
-﻿new SharpApple.EmuMain().Run();
+﻿new SharpApple.EmulatorMain().Run();

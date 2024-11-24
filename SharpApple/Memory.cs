@@ -1,8 +1,11 @@
-﻿namespace SharpApple;
+﻿using Chroma.Graphics;
+using Chroma.SabreVGA;
+
+namespace SharpApple;
 
 public class Memory
 {
-    public byte[] Ram { get; set; }//default memory size is 16 kB
+    public byte[] Ram { get; set; }// default memory size is 16 kB
 
     public ushort RamSize => (ushort)Ram.Length;
 
@@ -11,7 +14,7 @@ public class Memory
 
     public ushort Reset { get; } = 0xFF00;
 
-    public char Kbd = '\0'; //keyboard register
+    public char Kbd = '\0'; // keyboard register
 
     private long _nextDsp = 0;
 
@@ -42,7 +45,7 @@ public class Memory
             {
                 switch (address)
                 {
-                    case KbdReg:
+                    case KbdReg: // computer is reading from the keyboard
                         if (Kbd != '\0')
                         {
                             char kbd = Kbd;
@@ -50,9 +53,9 @@ public class Memory
                             return (byte)(kbd | 0x80);
                         }
                         return 0x00;
-                    case KbdCrReg:
+                    case KbdCrReg: // return 0x80 if keyboard is something
                         return (byte)(Kbd != '\0' ? 0x80 : 0x00);
-                    case DspReg:
+                    case DspReg: // what the fuck, apparently makes this work
                         return (byte)(DateTime.Now.ToFileTimeUtc() > _nextDsp ? 0x00 : 0x80);
                 }
             }
@@ -83,22 +86,26 @@ public class Memory
             }
             else if (address >= 0xD10 && address <= 0xD013) // PIA
             {
-                //TODO: CPU tries to write to PIA - behave accordingly
                 switch (address)
                 {
-                    case DspReg:
+                    case DspReg: // computer is outputting something to the screen - do some stuff with character
                         if ((value & 0b01111111) == 13)
-                        {
-                            EmuMain.Terminal.NextLine();
-                        }
+                            EmulatorMain.NextLine();
+                        if ((value & 0b01111111) == '_')
+                            EmulatorMain.Backspace();
                         else
                         {
                             if ((value & 0b01111111) >= 32 && (value & 0b01111111) <= 95)
-                                EmuMain.Terminal.Write( (char)(value & 0b01111111) );
+                                EmulatorMain.Screen.PutCharAt(EmulatorMain.Screen.Cursor.X++, EmulatorMain.Screen.Cursor.Y, (char)(value & 0b01111111), EmulatorMain.FgColor, Color.Black, false);
                         }
+                        // some weird shit with registers wtf
                         _nextDsp = DateTime.Now.ToFileTimeUtc() + (Kbd != 0 ? 0 : 17);
                         break;
                 }
+            }
+            else
+            {
+                EmulatorMain.Log.Error($"Cannot write at {address}");
             }
         }
     }
