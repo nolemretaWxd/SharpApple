@@ -35,7 +35,7 @@ public class EmulatorMain : Game
     private SubMenus _submenu;
     private bool _readingInput;
     private string _inputBuffer;
-    private byte _startAddress;
+    private ushort _startAddress;
 
     private static Version? _version = Assembly.GetExecutingAssembly().GetName().Version;
     private static DateTime _buildDate = new DateTime(2000, 1, 1)
@@ -243,9 +243,9 @@ public class EmulatorMain : Game
                 switch (e.KeyCode)
                 {
                     case KeyCode.Backspace:
-                        if (_readingInput)
+                        if (_readingInput && _inputBuffer != "")
                         {
-                            _inputBuffer = _inputBuffer.Substring(0, _inputBuffer.Length - 2);
+                            _inputBuffer = _inputBuffer.Substring(0, _inputBuffer.Length - 1);
                         }
                         break;
                     case KeyCode.Return:
@@ -325,20 +325,20 @@ public class EmulatorMain : Game
         if (_submenu == SubMenus.Addr)
         {
             _readingInput = false;
-            byte address = byte.Parse(_inputBuffer);
+            ushort address = Convert.ToUInt16(_inputBuffer, 16);
             DialogResult file = Dialog.FileOpen();
             byte[] binFile = File.ReadAllBytes(file.Path);
             Array.Copy(binFile, 0, _mem.Ram, address, binFile.Length);
             _submenu = SubMenus.None;
         } else if (_submenu == SubMenus.AddrStart)
         {
-            _startAddress = byte.Parse(_inputBuffer);
+            _startAddress = Convert.ToUInt16(_inputBuffer, 16);
             _submenu = SubMenus.AddrEnd;
         } else if (_submenu == SubMenus.AddrEnd)
         {
             DialogResult file = Dialog.FileSave();
             _readingInput = false;
-            byte addrEnd = byte.Parse(_inputBuffer);
+            ushort addrEnd = Convert.ToUInt16(_inputBuffer, 16);
             byte[] region = new byte[addrEnd - _startAddress + 1];
             Array.Copy(_mem.Ram, _startAddress, region, 0, addrEnd - _startAddress + 1);
             File.WriteAllBytes(file.Path, region);
