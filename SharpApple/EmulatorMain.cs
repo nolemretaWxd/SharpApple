@@ -169,8 +169,7 @@ public class EmulatorMain : Game
                         break;
                     case SubMenus.About:
                         context.DrawString(_ttf, "SharpApple - Apple 1 emulator\n\n" +
-                                                 $"Version {Assembly.GetExecutingAssembly().GetName().Version}\n"+
-                                                 $"Built on {_buildDate.ToString("dd.MM.yyyy HH:mm")}\n\n"+
+                                                 $"Version {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}\n"+
                                                  "Written in C#\n" +
                                                  "and using Chroma Framework\n" +
                                                  "(c) 2024 krnlException\n\n" +

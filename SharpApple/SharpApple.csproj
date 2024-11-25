@@ -10,8 +10,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>12</LangVersion>
         <Company>krnlException</Company>
-        <AssemblyVersion>1.0.*</AssemblyVersion>
-        <FileVersion>1.0.*</FileVersion>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
         <Deterministic>false</Deterministic>
     </PropertyGroup>
 
@@ -66,11 +66,6 @@
       <None Update="Px437_IBM_CGA.ttf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-    </ItemGroup>
-
-
-    <ItemGroup>
-      <Folder Include="programs\" />
     </ItemGroup>
 
 </Project>

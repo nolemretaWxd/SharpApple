@@ -97,6 +97,11 @@ public class Memory
                         {
                             if ((value & 0b01111111) >= 32 && (value & 0b01111111) <= 95)
                                 EmulatorMain.Screen.PutCharAt(EmulatorMain.Screen.Cursor.X++, EmulatorMain.Screen.Cursor.Y, (char)(value & 0b01111111), EmulatorMain.FgColor, Color.Black, false);
+
+                            if (EmulatorMain.Screen.Cursor.X >= EmulatorMain.Screen.WindowColumns)
+                            {
+                                EmulatorMain.NextLine();
+                            }
                         }
                         // some weird shit with registers wtf
                         _nextDsp = DateTime.Now.ToFileTimeUtc() + (Kbd != 0 ? 0 : 17);
