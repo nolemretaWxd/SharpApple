@@ -112,7 +112,7 @@ public class EmulatorMain : Game
         }
         else
         {
-            if (_readingInput)
+            if (_readingInput && _inputBuffer.Length < 5)
             {
                 _inputBuffer += e.Text.ToUpper();
             }
@@ -384,6 +384,15 @@ public class EmulatorMain : Game
         } else if (_submenu == SubMenus.AddrEnd)
         {
             DialogResult file = Dialog.FileSave();
+
+            if (file.Path == null)
+            {
+                Log.Error("File not chosen");
+                _inputBuffer = "";
+                _submenu = SubMenus.None;
+                return;
+            }
+
             ushort addrEnd;
             try
             {
@@ -395,7 +404,15 @@ public class EmulatorMain : Game
                 _inputBuffer = "";
                 return;
             }
+
             byte[] region = new byte[addrEnd - _startAddress + 1];
+
+            if (addrEnd >= _mem.RamSize)
+            {
+                Log.Error("Address out of range");
+                _inputBuffer = "";
+                return;
+            }
 
             if (region.Length > 0)
             {
